@@ -9,22 +9,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <div class="node-js node" id="node-A" draggable="false">
-        <!-- <span class="identifier" id="node-A-name" >A</span> -->
-        <input class="identifier" id="node-A-name" type="text" name="node-A-name" value="A">
+    <div class="treeboard">
+        <button class="add-node" id="add-node-button">+</button>
+        <div class="node-js node" id="node-A" draggable="false">
+            <!-- <span class="identifier" id="node-A-name" >A</span> -->
+            <input class="identifier" id="node-A-name" type="text" name="node-A-name" value="A">
+        </div>
+        <div class="node-js node" id="node-B" draggable="false">
+            <input class="identifier" id="node-B-name" type="text" name="node-B-name" value="B">
+        </div>
+        <div class="edge" id="edge-AB">
+            <span class="track-spot" id="edge-AB-track-spot">1</span>
+            <input class="weight" id="edge-AB-weight" type="number" name="node-B-name" value="12">
+        </div>
+        <div class="edge-field required"></div>
+        <div class="edge-field"></div>
+        <div class="add-edge"></div>
+
     </div>
-    <div class="node-js node" id="node-B" draggable="false">
-        <input class="identifier" id="node-B-name" type="text" name="node-B-name" value="B">
-    </div>
-    <div class="add-node" id="add-node-button"></div>
-    <div class="edge" id="edge-AB">
-        <!-- <span class="weight" id="edge-AB-weight" aria-selected="false">12</span> -->
-        
-        <input class="weight" id="edge-AB-weight" type="number" name="node-B-name" value="12">
-    </div>
-    <div class="edge-field required"></div>
-    <div class="edge-field"></div>
-    <div class="add-edge"></div>
     <script src="script.js"></script>
 </body>
 </html>

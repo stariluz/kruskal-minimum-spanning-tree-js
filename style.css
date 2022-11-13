@@ -2,6 +2,12 @@
 :root{
     font-family: 'Sono', sans-serif;
 }
+html{
+    font-size: 28px;
+}
+input,button{
+    font-size: 1rem;
+}
 body{
     padding: 0;
     margin: 0;
@@ -20,6 +26,43 @@ body{
     background-color: white;
     font-weight: 600;
 }
+.node#node-A{
+    top: calc(50% - 1.5rem);
+    left: calc(50% - 1.5rem - 2rem);
+}
+.node#node-B{
+    top: calc(50% - 1.5rem);
+    left: calc(50% + 1.5rem + 2rem);
+}
+.add-node{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2rem;
+    width: 2rem;
+    margin: 0;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid black;
+    background-color: white;
+    font-weight: 600;
+    box-shadow: 0px 5px 5px 0px rgb(214, 214, 214);
+
+    transition: 0.2s ease all;
+    transform-origin: center;
+}
+.add-node:hover{
+    background-color: rgb(244, 244, 244);
+}
+.add-node:active{
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 3px 2px 0px rgb(124, 124, 124);
+    transform: scale(0.95);
+    
+}
 .edge{
     position: relative;
     height: 2px;
@@ -33,16 +76,61 @@ body{
 .node .identifier{
     font-weight: bold;
 }
-.edge .weight {
+.track-spot {
+    width: 0.8rem;
+    height: 0.8rem;
+    min-width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.05rem 0.1rem;
+
+    font-weight: 800;
     font-size: 0.5rem;
+
+    color: white;
+    background-color: rgb(19, 158, 245);
+    border-radius: 1rem;
+    
+    transition: 0.4s ease all;
+
     position: absolute;
     left: 50%;
-    bottom: 100%;
     transform-origin: 50% 50%;
+    transform: rotate(0deg) translateX(-50%);
+    top: calc(100% + 0.1rem);
+    bottom: unset;
+
+    display: none;
+    opacity: 0;
+}
+.track-spot.tacked{
+    display: unset;
+    opacity: 1;
+}
+.mirrored .track-spot{
+    transform: rotate(180deg) translateX(50%);
+    top: unset;
+    bottom: calc(100% + 0.1rem);
+}
+.weight {
+    font-size: 0.5rem;
     color: blue;
+    
+    position: absolute;
+    transform-origin: 50% 50%;
+    transform: rotate(0deg) translateX(-50%);
+    left: 50%;
+    top: unset;
+    bottom: calc(100% + 0.1rem);
+}
+.mirrored .weight{
+    transform: rotate(180deg) translateX(50%);
+    top: 100%;
+    bottom: unset;
 }
 .node .identifier,
-.edge .weight{
+.weight{
     padding: 0rem;
     margin: 0rem;
     width: 1.5rem;
@@ -54,10 +142,10 @@ body{
     outline: none;
     text-align: center;
 
-    transition: 0.5s ease all;
+    transition: 0.4s ease all;
 }
 .node .identifier:focus,
-.edge .weight:focus{
+.weight:focus{
     width: 4rem;
     background-color: rgb(226, 226, 226);
     border-bottom: 2px solid rgb(186, 186, 186);
