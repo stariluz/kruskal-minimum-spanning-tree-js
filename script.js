@@ -14,8 +14,6 @@ function main() {
     }
 }
 function onMouseDown(e) {
-    
-    e.preventDefault();
     console.log(e.target);
     isDown = true;
     nodeOnMovement=e.target;
