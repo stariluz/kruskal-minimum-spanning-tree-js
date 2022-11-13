@@ -1,12 +1,15 @@
 const nodeHalfLength=42;
 let state=0;
 
+let nodesCounter=2;
 let selectedNode;
-let nodesElements=document.getElementsByClassName("node-js");
+let nodesElements=[];
 let nodeTemplate=document.createElement("div");
 nodeTemplate.className="node-js node";
-nodeTemplate.id="creating-node";
-nodeTemplate.name="creating-node";
+nodeTemplate.draggable=false;
+let addNodeButton=document.getElementById("add-node");
+let nodesContainer=document.getElementById("nodes-container");
+
 
 let creatingEdge;
 let edges=[];
@@ -20,8 +23,29 @@ let offset = [0,0];
 main();
 
 function main() {
+    let nodes=document.getElementsByClassName("node-js");
+    for(let i=0; i<nodes.length; i++){
+        nodesElements.push(nodes[i]);
+    }
     getNodes();
 }
+
+addNodeButton.addEventListener('click', (event)=>{
+    let nodeID=String.fromCharCode(65+nodesCounter++);
+    let newNode=nodeTemplate.cloneNode(false);
+    newNode.id=`node-${nodeID}`;
+    newNode.innerHTML=`
+        <input class="identifier" id="node-${nodeID}-name" type="text" name="node-${nodeID}-name" value="${nodeID}">`;
+    nodesElements.push(newNode);
+    nodesContainer.appendChild(newNode);
+    
+    newNode.addEventListener('mousedown',onMouseDown,true);
+    newNode.addEventListener('contextmenu',onRightClick,true);
+});
+window.addEventListener('resize', function(event) {
+    getNodes();
+}, true);
+
 function getNodes(){
     for(let i=0; i<nodesElements.length; i++){
         nodesElements[i].removeEventListener('mousedown',onMouseDown,true);
@@ -31,9 +55,6 @@ function getNodes(){
         updateEdges(nodesElements[i]);
     }
 }
-window.addEventListener('resize', function(event) {
-    getNodes();
-}, true);
 
 /**
  * @param {Event} event - The event
@@ -62,16 +83,16 @@ function onRightClick(event) {
 
         let id1=creatingEdge.begin+creatingEdge.end;
         let id2=creatingEdge.end+creatingEdge.begin;
-        let nodeId1=`edge-${id1}`;
-        let nodeId2=`edge-${id2}`;
-        if(document.getElementById(nodeId1)|| document.getElementById(nodeId2)){
+        let edgeID1=`edge-${id1}`;
+        let edgeID2=`edge-${id2}`;
+        if(document.getElementById(edgeID1)|| document.getElementById(edgeID2)){
             edgesContainer.removeChild(creatingEdge.element);
             creatingEdge=null;
             state=-1;
             return;
         }
 
-        creatingEdge.element.id=nodeId1;
+        creatingEdge.element.id=edgeID1;
         creatingEdge.element.innerHTML=`
             <span class="track-spot" id="edge-${id1}-track-spot">-1</span>
             <input class="weight" type="number" value="0"
