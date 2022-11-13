@@ -1,15 +1,55 @@
 
-
+var isDown = false;
+var offset = [0,0];
+var nodeOnMovement;
 main();
 
 function main() {
-    let nodes=document.getElementsByClassName("node-js");
+    let nodesElements=document.getElementsByClassName("node-js");
+    let nodesElementsNames=document.getElementById(`identifier`);
     
-    for(let i=0; i<nodes.length; i++){
-        nodes[i].addEventListener('dragend',(event)=>OnDragEndsEvent(event));
+    for(let i=0; i<nodesElements.length; i++){
+        // nodesElements[i].addEventListener('dragends',(event)=>onDragEndsEvent(event),true);
+        nodesElements[i].addEventListener('mousedown',(event)=>onMouseDown(event),true);
     }
 }
+function onMouseDown(e) {
+    
+    e.preventDefault();
+    console.log(e.target);
+    isDown = true;
+    nodeOnMovement=e.target;
+    console.log(nodeOnMovement.classList.contains('identifier'), nodeOnMovement.parentElement)
+    if(nodeOnMovement.classList.contains('identifier')){
+        nodeOnMovement=nodeOnMovement.parentElement;
+    }
+    offset = [
+        nodeOnMovement.offsetLeft - e.clientX,
+        nodeOnMovement.offsetTop - e.clientY
+    ];
+    document.addEventListener('mousemove',onMouseMove,true);
+    document.addEventListener('mouseup',onMouseUp,true);
+}
 
+function onMouseUp() {
+    console.log("UP");
+    document.removeEventListener('mousemove', onMouseMove,true);
+    document.removeEventListener('mouseup',onMouseUp,true);
+    nodeOnMovement=null;
+}
+
+function onMouseMove(event) {
+    event.preventDefault();
+    let mousePosition = {
+
+        x : event.clientX,
+        y : event.clientY
+
+    };
+    nodeOnMovement.style.left = (mousePosition.x + offset[0]) + 'px';
+    nodeOnMovement.style.top  = (mousePosition.y + offset[1]) + 'px';
+    updateEdges(event.target);
+}
 let edges=[
     {
         edge: document.getElementById("edge-AB"),
@@ -27,7 +67,7 @@ const midLength=24;
 /**
  * @param {Event} event - The event
  */
-function OnDragEndsEvent(event) {
+function onDragEndsEvent(event) {
     let element=event.target;
     let x=event.clientX-midLength;
     let y=event.clientY-midLength;

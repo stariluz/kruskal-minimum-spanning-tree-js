@@ -6,17 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <div class="node-js node" id="node-A" draggable="true">
-        <span class="identifier">A</span>
+    <div class="node-js node" id="node-A" draggable="false">
+        <span class="identifier" id="node-A-name" >A</span>
     </div>
-    <div class="node-js node" id="node-B" draggable="true">
-        <span class="identifier">B</span>
+    <div class="node-js node" id="node-B" draggable="false">
+        <span class="identifier" id="node-B-name" >B</span>
     </div>
     <div class="add-node" id="add-node-button"></div>
     <div class="edge" id="edge-AB">
-        <span class="weight" id="edge-AB-weight">12</span>
+        <span class="weight" id="edge-AB-weight" aria-selected="false">12</span>
     </div>
     <div class="edge-field required"></div>
     <div class="edge-field"></div>
