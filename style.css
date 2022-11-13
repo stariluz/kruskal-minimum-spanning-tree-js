@@ -28,11 +28,11 @@ body{
 }
 .node#node-A{
     top: calc(50% - 1.5rem);
-    left: calc(50% - 1.5rem - 2rem);
+    left: calc(50% - 1.5rem - 4rem);
 }
 .node#node-B{
     top: calc(50% - 1.5rem);
-    left: calc(50% + 1.5rem + 2rem);
+    left: calc(50% - 1.5rem + 4rem);
 }
 .add-node{
     position: absolute;
@@ -66,7 +66,7 @@ body{
 .edge{
     position: relative;
     height: 2px;
-    /* width: 0px; */
+    width: 0px;
     background-color: black;
     z-index: -1;
     transform-origin: 0% 0%;

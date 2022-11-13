@@ -11,20 +11,16 @@
 <body>
     <div class="treeboard">
         <button class="add-node" id="add-node-button">+</button>
-        <div class="node-js node" id="node-A" draggable="false">
-            <!-- <span class="identifier" id="node-A-name" >A</span> -->
-            <input class="identifier" id="node-A-name" type="text" name="node-A-name" value="A">
-        </div>
-        <div class="node-js node" id="node-B" draggable="false">
-            <input class="identifier" id="node-B-name" type="text" name="node-B-name" value="B">
-        </div>
-        <div class="edges-container" id="edges-container">
-            <div class="edge" id="edge-AB">
-                <span class="track-spot" id="edge-AB-track-spot">1</span>
-                <input class="weight" id="edge-AB-weight" type="number" name="node-B-name" value="12">
+        <div class="nodes-container">
+            <div class="node-js node" id="node-A" draggable="false">
+                <input class="identifier" id="node-A-name" type="text" name="node-A-name" value="A">
+            </div>
+            <div class="node-js node" id="node-B" draggable="false">
+                <input class="identifier" id="node-B-name" type="text" name="node-B-name" value="B">
             </div>
         </div>
-        <!-- <div class="add-edge"></div> -->
+        <div class="edges-container" id="edges-container">
+        </div>
 
     </div>
     <script src="script.js"></script>

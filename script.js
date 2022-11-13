@@ -1,23 +1,21 @@
 const nodeHalfLength=42;
 let state=0;
-let offset = [0,0];
-let nodeOnMovement;
+
 let selectedNode;
-let edgesContainer=document.getElementById("edges-container")
 let nodesElements=document.getElementsByClassName("node-js");
-let edges=[
-    /* {
-        element: document.getElementById("edge-AB"),
-        begin: 'A',
-        end: 'B',
-    }, */
-    /* {
-        element: document.getElementById("edge-BC"),
-        begin: 'B',
-        end: 'C',
-    }, */
-];
-let lastEdge;
+let nodeTemplate=document.createElement("div");
+nodeTemplate.className="node-js node";
+nodeTemplate.id="creating-node";
+nodeTemplate.name="creating-node";
+
+let creatingEdge;
+let edges=[];
+let edgesContainer=document.getElementById("edges-container");
+let edgeTemplate=document.createElement("div");
+edgeTemplate.classList.add("edge");
+edgeTemplate.id="creating-edge";
+
+let offset = [0,0];
 
 main();
 
@@ -26,8 +24,6 @@ function main() {
 }
 function getNodes(){
     for(let i=0; i<nodesElements.length; i++){
-        // nodesElements[i].addEventListener('dragends',(event)=>onDragEndsEvent(event),true);
-        
         nodesElements[i].removeEventListener('mousedown',onMouseDown,true);
         nodesElements[i].addEventListener('mousedown',onMouseDown,true);
         nodesElements[i].addEventListener('contextmenu',onRightClick,true);
@@ -38,98 +34,141 @@ function getNodes(){
 window.addEventListener('resize', function(event) {
     getNodes();
 }, true);
+
+/**
+ * @param {Event} event - The event
+ */
 function onRightClick(event) {
     event.preventDefault();
     if(state===2){
+        console.log("STATE:", state);
+
+        document.removeEventListener('contextmenu',onRightClick,true);
+        document.removeEventListener('mousemove',onMouseMove,true);
+        document.removeEventListener('mouseup',onMouseUp,true);
+
         if(event.target.classList.contains('identifier')){
             selectedNode=event.target.parentElement;
-        }else if(event.target.classList.contains('node')){
+        }else if(event.target.classList.contains('node')&&selectedNode!=event.target){
             selectedNode=event.target;
         }else{
-            lastEdge=null;
+            // console.log(creatingEdge.element);
+            edgesContainer.removeChild(creatingEdge.element);
+            creatingEdge=null;
+            state=0;
+            return;
+        }
+        creatingEdge.end=selectedNode.id.replace('node-','');
+
+        let id1=creatingEdge.begin+creatingEdge.end;
+        let id2=creatingEdge.end+creatingEdge.begin;
+        let nodeId1=`edge-${id1}`;
+        let nodeId2=`edge-${id2}`;
+        if(document.getElementById(nodeId1)|| document.getElementById(nodeId2)){
+            edgesContainer.removeChild(creatingEdge.element);
+            creatingEdge=null;
+            state=-1;
             return;
         }
 
-        lastEdge.end=selectedNode.id.replace('node-',''),
-        lastEdge.element.id="edge-${lastEdge.begin+lastEdge.end}";
-        lastEdge.element.innerHTML=`
-            <span class="track-spot" id="edge${lastEdge.begin+lastEdge.end}-track-spot">-1</span>
-            <input class="weight" id="edge-${lastEdge.begin+lastEdge.end}-weight" type="number" value="0">
+        creatingEdge.element.id=nodeId1;
+        creatingEdge.element.innerHTML=`
+            <span class="track-spot" id="edge-${id1}-track-spot">-1</span>
+            <input class="weight" type="number" value="0"
+                id="edge-${id1}-weight"
+                name="edge-${id1}-weight">
         `;
-        recalculateEdgeWithIDs(lastEdge.begin,lastEdge.end);
-        edgesContainer.push(lastEdge);
-
-        document.addEventListener('contextmenu',onRightClick,true);
-        document.removeEventListener('mousemove',onMouseMove,true);
-        document.removeEventListener('mouseup',onMouseUp,true);
-    }else{
+        console.log("END:",creatingEdge);
+        edges.push(creatingEdge);
+        recalculateEdgeWithIDs(creatingEdge.begin,creatingEdge.end);
+        state=-1;
+    }
+    else if(state===-1)
+    {
+        state=0;
+    }
+    else{
+        console.log("STATE:", state);
         state=2;
         
         if(event.target.classList.contains('identifier')){
             selectedNode=event.target.parentElement;
-        }else{
+        }else {
             selectedNode=event.target;
         }
         offset = [
             selectedNode.offsetLeft - event.clientX,
             selectedNode.offsetTop - event.clientY
         ];
-        lastEdge={
-            element: document.createElement("div"),
+        creatingEdge={
+            element: edgeTemplate.cloneNode(false),
             begin: selectedNode.id.replace('node-',''),
             end: undefined,
         }
-        lastEdge.element.classList.add("edge");
-        lastEdge.element.id="creating-edge";
-        lastEdge.element.innerHTML=``;
-        edgesContainer.appendChild(lastEdge.element);
+        console.log("START:",creatingEdge);
+        edgesContainer.appendChild(creatingEdge.element);
         calculateStartEdge(
-            lastEdge.element,
+            creatingEdge.element,
             selectedNode.getBoundingClientRect().left,
             selectedNode.getBoundingClientRect().top
         );
         document.addEventListener('contextmenu',onRightClick,true);
         document.addEventListener('mousemove',onMouseMove,true);
-        document.addEventListener('mouseup',onMouseUp,true);
+        // document.addEventListener('mouseup',onMouseUp,true);
     }
 }
+
+/**
+ * @param {Event} event - The event
+ */
 function onMouseDown(event) {
+    console.log("MOUSE DOWN!");
+    let pressedButton=event.button;
+    if(pressedButton==2){
+        return;
+    }
     state=1;
-    
     if(event.target.classList.contains('identifier')){
-        nodeOnMovement=event.target.parentElement;
+        selectedNode=event.target.parentElement;
     }else{
-        nodeOnMovement=event.target;
+        selectedNode=event.target;
     }
     offset = [
-        nodeOnMovement.offsetLeft - event.clientX,
-        nodeOnMovement.offsetTop - event.clientY
+        selectedNode.offsetLeft - event.clientX,
+        selectedNode.offsetTop - event.clientY
     ];
     document.addEventListener('mousemove',onMouseMove,true);
     document.addEventListener('mouseup',onMouseUp,true);
 }
 
-function onMouseUp() {
+function onMouseUp(event) {
+    console.log("MOUSE UP!");
+    let pressedButton=event.button;
+    if(pressedButton==2){
+        return;
+    }
+    state=0;
     document.removeEventListener('mousemove', onMouseMove,true);
     document.removeEventListener('mouseup',onMouseUp,true);
-    nodeOnMovement=null;
+    selectedNode=null;
 }
 
+/**
+ * @param {Event} event - The event
+ */
 function onMouseMove(event) {
     event.preventDefault();
     
     let x = event.clientX,
         y = event.clientY;
     if(state===1){
-        nodeOnMovement.style.left = (x + offset[0]) + 'px';
-        nodeOnMovement.style.top  = (y + offset[1]) + 'px';
-        updateEdges(nodeOnMovement);
+        selectedNode.style.left = (x + offset[0]) + 'px';
+        selectedNode.style.top  = (y + offset[1]) + 'px';
+        updateEdges(selectedNode);
     }else if(state===2){
         // console.log(selectedNode);
-        console.log(
-        );
         calculateEndEdge(
-            lastEdge.element,
+            creatingEdge.element,
             getCenteredPixels(selectedNode.getBoundingClientRect().left),
             getCenteredPixels(selectedNode.getBoundingClientRect().top),
             x,
@@ -201,10 +240,10 @@ function calculateEndEdge(edge, x1, y1, x2, y2){
         dy=y2-y1;
     let length=Math.sqrt(dx**2+dy**2);
     let angle=180*Math.atan(dy/dx)/Math.PI;
-    
+    /* 
     console.log("X",x2, x1, dx);
     console.log("Y",y2, y1, dy);
-    console.log("Length",length);
+    console.log("Length",length); */
 
     edge.style.width=length+"px";
     if(dx>=0){
