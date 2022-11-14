@@ -1,7 +1,7 @@
 const nodeHalfLength=42;
 let state=0;
 
-let nodesCounter=2;
+let nodesCounter=3;
 let selectedNode;
 let nodesElements=[];
 let nodeTemplate=document.createElement("div");
@@ -11,7 +11,23 @@ let addNodeButton=document.getElementById("add-node");
 let nodesContainer=document.getElementById("nodes-container");
 
 let creatingEdge;
-let edges=[];
+let edges=[
+    {
+        begin: 'A',
+        end: 'B',
+        element: document.getElementById('AB')
+    },
+    {
+        begin: 'C',
+        end: 'B',
+        element: document.getElementById('CB')
+    },
+    {
+        begin: 'C',
+        end: 'A',
+        element: document.getElementById('CA')
+    },
+];
 let edgesContainer=document.getElementById("edges-container");
 let edgeTemplate=document.createElement("div");
 edgeTemplate.classList.add("edge");
@@ -243,10 +259,10 @@ function endCreateEdgeConection(element){
 
     creatingEdge.element.id=edgeID;
     creatingEdge.element.innerHTML=`
-        <span class="track-spot" id="edge-${id}-track-spot">-1</span>
+        <span class="track-spot" id="edge-track-spot-${id}"></span>
         <input class="weight" type="number" value="0"
-            id="edge-${id}-weight"
-            name="edge-${id}-weight">
+            id="edge-weight-${id}"
+            name="edge-weight-${id}">
     `;
     edges.push(creatingEdge);
     recalculateEdgeWithIDs(creatingEdge.begin,creatingEdge.end);
@@ -310,4 +326,69 @@ function calculateEndEdge(edge, x1, y1, x2, y2){
         edge.style.transform=`rotate(${180+angle}deg)`;
         edge.classList.add('mirrored');
     }
+}
+
+var form = document.getElementById('edges-form');
+form.addEventListener("submit", chargeResults);
+
+/**
+ * @param {Event} event - The event
+ */
+function chargeResults(event){
+    event.preventDefault();
+    const  formData = new FormData(event.target);
+    const formProps = Object.fromEntries(formData);
+    let entries=Object.entries(formProps);
+    sortResults(entries);
+    return false;
+}
+
+/**
+ * @param {Array} edges - The edges with values
+ */
+function sortResults(edges){
+    let sorted=edges.map((edge)=>{
+        let ID=edge[0].replace("edge-weight-",'')
+        return {
+            begin: ID[0],
+            end: ID[1],
+            weight: Number(edge[1]),
+        }
+    }).sort((edge1, edge2)=>{
+        if(edge1.weight==edge2.weight){
+            return 0;
+        }
+        if(edge1.weight<edge2.weight){
+            return -1;
+        }
+        if(edge1.weight>edge2.weight){
+            return 1;
+        }
+    })
+    calculateKruskalAlgorithm(sorted);
+}
+/**
+ * @param {Array} edges - The edges with values
+ */
+function calculateKruskalAlgorithm(edges){
+    let nodesVisited="";
+    edges.forEach((edge,index)=>{
+        let containsBegin=nodesVisited.includes(edge.begin);
+        let containsEnd=nodesVisited.includes(edge.end);
+        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge.begin+edge.end}`);
+        let edgeElement=document.getElementById(`edge-${edge.begin+edge.end}`);
+        if(containsBegin&&containsEnd){
+            edgeElement.style.backgroundColor="var(--color-1)";
+            edgeSpotElement.innerHTML=null;
+            edgeSpotElement.classList.remove("render");
+            return false;
+        }else{
+            edgeElement.style.backgroundColor="var(--color-blue)";
+            edgeSpotElement.innerHTML=index+1;
+            edgeSpotElement.classList.add("render");
+            nodesVisited+=edge.begin+edge.end;
+        }
+        return true;
+    });
+    // console.log(nodesVisited);
 }

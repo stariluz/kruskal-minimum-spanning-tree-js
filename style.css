@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Sono:wght@400;500;600;700;800&display=swap');
 :root{
     font-family: 'Sono', sans-serif;
+    --color-1: #000000;
+    --color-blue: #139ef5;
 }
 html{
     font-size: 28px;
@@ -29,16 +31,29 @@ body{
 }
 .node#node-A{
     top: calc(50% - 1.5rem);
-    left: calc(50% - 1.5rem - 4rem);
+    left: calc(50% - 1.5rem - 5rem);
 }
 .node#node-B{
     top: calc(50% - 1.5rem);
-    left: calc(50% - 1.5rem + 4rem);
+    left: calc(50% - 1.5rem + 5rem);
 }
-.add-node{
-    position: absolute;
+.node#node-C{
+    top: calc(50% - 1.5rem - 6rem);
+    left: calc(50% - 1.5rem);
+}
+.sort-tree{
     top: 1rem;
     right: 1rem;
+    border: 2px solid var(--color-blue);
+}
+.add-node{
+    top: 1rem;
+    right: 3.5rem;
+    border: 2px solid black;
+}
+.add-node,
+.sort-tree{
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,7 +62,6 @@ body{
     margin: 0;
     padding: 0;
     border-radius: 50%;
-    border: 2px solid black;
     background-color: white;
     font-weight: 600;
     box-shadow: 0px 5px 4px 0px rgb(191, 191, 191);
@@ -55,14 +69,19 @@ body{
     transition: 0.2s ease all;
     transform-origin: center;
 }
-.add-node:hover{
+.add-node:hover,
+.sort-tree:hover{
     background-color: rgb(244, 244, 244);
 }
-.add-node:active{
+.add-node:active,
+.sort-tree:active{
     background-color: rgb(255, 255, 255);
     box-shadow: 0px 3px 2px 0px rgb(124, 124, 124);
     transform: scale(0.95);
     
+}
+.bi.bi-check-circle-fill{
+    fill: var(--color-blue);
 }
 .edge{
     position: relative;
@@ -125,7 +144,6 @@ body{
     width: 0.8rem;
     height: 0.8rem;
     min-width: fit-content;
-    display: flex;
     align-items: center;
     justify-content: center;
     padding: 0.05rem 0.1rem;
@@ -134,7 +152,7 @@ body{
     font-size: 0.5rem;
 
     color: white;
-    background-color: rgb(19, 158, 245);
+    background-color: var(--color-blue);
     border-radius: 1rem;
     
     transition: 0.4s ease all;
@@ -149,8 +167,8 @@ body{
     display: none;
     opacity: 0;
 }
-.track-spot.tacked{
-    display: unset;
+.track-spot.render{
+    display: flex;
     opacity: 1;
 }
 .mirrored .track-spot{

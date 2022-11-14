@@ -18,9 +18,37 @@
             <div class="node-js node" id="node-B" draggable="false">
                 <input class="identifier" id="node-B-name" type="text" name="node-B-name" value="B">
             </div>
+            <div class="node-js node" id="node-C" draggable="false">
+                <input class="identifier" id="node-C-name" type="text" name="node-C-name" value="C">
+            </div>
         </div>
-        <div class="edges-container" id="edges-container">
-        </div>
+        <form id="edges-form">
+            <button class="sort-tree" id="sort-tree" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="blue" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                  </svg>
+            </button>
+            <div class="edges-container" id="edges-container">
+                <div class="edge" id="edge-AB">
+                    <span class="track-spot" id="edge-track-spot-AB"></span>
+                    <input class="weight" type="number" value="23"
+                        id="edge-weight-AB"
+                        name="edge-weight-AB">
+                </div>
+                <div class="edge" id="edge-CB">
+                    <span class="track-spot" id="edge-track-spot-CB"></span>
+                    <input class="weight" type="number" value="4"
+                        id="edge-weight-CB"
+                        name="edge-weight-CB">
+                </div>
+                <div class="edge" id="edge-CA">
+                    <span class="track-spot" id="edge-track-spot-CA"></span>
+                    <input class="weight" type="number" value="19"
+                        id="edge-weight-CA"
+                        name="edge-weight-CA">
+                </div>
+            </div>
+        </form>
 
     </div>
     <script src="script.js"></script>
