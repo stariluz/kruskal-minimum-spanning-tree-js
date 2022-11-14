@@ -10,7 +10,6 @@ nodeTemplate.draggable=false;
 let addNodeButton=document.getElementById("add-node");
 let nodesContainer=document.getElementById("nodes-container");
 
-
 let creatingEdge;
 let edges=[];
 let edgesContainer=document.getElementById("edges-container");
@@ -42,126 +41,54 @@ addNodeButton.addEventListener('click', (event)=>{
     newNode.addEventListener('mousedown',onMouseDown,true);
     newNode.addEventListener('contextmenu',onRightClick,true);
 });
+
 window.addEventListener('resize', function(event) {
     getNodes();
 }, true);
 
-function getNodes(){
-    for(let i=0; i<nodesElements.length; i++){
-        nodesElements[i].removeEventListener('mousedown',onMouseDown,true);
-        nodesElements[i].addEventListener('mousedown',onMouseDown,true);
-        nodesElements[i].addEventListener('contextmenu',onRightClick,true);
-
-        updateEdges(nodesElements[i]);
-    }
-}
-
 /**
  * @param {Event} event - The event
  */
-function onRightClick(event) {
-    event.preventDefault();
-    if(state===2){
-        console.log("STATE:", state);
+function onMouseDown(event) {
+    console.log("MOUSE DOWN!", state);
 
+    let pressedButton=event.button;
+    if(pressedButton===2){
+        return;
+    }
+
+    if(state===2){
+        /**
+         * The element is not a node, then the edge creation is canceled.
+        */
         document.removeEventListener('contextmenu',onRightClick,true);
         document.removeEventListener('mousemove',onMouseMove,true);
         document.removeEventListener('mouseup',onMouseUp,true);
-
-        if(event.target.classList.contains('identifier')){
-            selectedNode=event.target.parentElement;
-        }else if(event.target.classList.contains('node')&&selectedNode!=event.target){
-            selectedNode=event.target;
-        }else{
-            // console.log(creatingEdge.element);
-            edgesContainer.removeChild(creatingEdge.element);
-            creatingEdge=null;
-            state=0;
-            return;
-        }
-        creatingEdge.end=selectedNode.id.replace('node-','');
-
-        let id1=creatingEdge.begin+creatingEdge.end;
-        let id2=creatingEdge.end+creatingEdge.begin;
-        let edgeID1=`edge-${id1}`;
-        let edgeID2=`edge-${id2}`;
-        if(document.getElementById(edgeID1)|| document.getElementById(edgeID2)){
-            edgesContainer.removeChild(creatingEdge.element);
-            creatingEdge=null;
-            state=-1;
-            return;
-        }
-
-        creatingEdge.element.id=edgeID1;
-        creatingEdge.element.innerHTML=`
-            <span class="track-spot" id="edge-${id1}-track-spot">-1</span>
-            <input class="weight" type="number" value="0"
-                id="edge-${id1}-weight"
-                name="edge-${id1}-weight">
-        `;
-        console.log("END:",creatingEdge);
-        edges.push(creatingEdge);
-        recalculateEdgeWithIDs(creatingEdge.begin,creatingEdge.end);
-        state=-1;
-    }
-    else if(state===-1)
-    {
+        edgesContainer.removeChild(creatingEdge.element);
+        creatingEdge=null;
         state=0;
-    }
-    else{
-        console.log("STATE:", state);
-        state=2;
-        
+        return false;
+    }else if(state===0){
         if(event.target.classList.contains('identifier')){
             selectedNode=event.target.parentElement;
-        }else {
+        }else{
             selectedNode=event.target;
         }
         offset = [
             selectedNode.offsetLeft - event.clientX,
             selectedNode.offsetTop - event.clientY
         ];
-        creatingEdge={
-            element: edgeTemplate.cloneNode(false),
-            begin: selectedNode.id.replace('node-',''),
-            end: undefined,
-        }
-        console.log("START:",creatingEdge);
-        edgesContainer.appendChild(creatingEdge.element);
-        calculateStartEdge(
-            creatingEdge.element,
-            selectedNode.getBoundingClientRect().left,
-            selectedNode.getBoundingClientRect().top
-        );
-        document.addEventListener('contextmenu',onRightClick,true);
+    
         document.addEventListener('mousemove',onMouseMove,true);
-        // document.addEventListener('mouseup',onMouseUp,true);
+        document.addEventListener('mouseup',onMouseUp,true);
+        state=1;
     }
+
 }
 
 /**
- * @param {Event} event - The event
+ * @param {Event} event - MouseUp Event
  */
-function onMouseDown(event) {
-    console.log("MOUSE DOWN!");
-    let pressedButton=event.button;
-    if(pressedButton==2){
-        return;
-    }
-    state=1;
-    if(event.target.classList.contains('identifier')){
-        selectedNode=event.target.parentElement;
-    }else{
-        selectedNode=event.target;
-    }
-    offset = [
-        selectedNode.offsetLeft - event.clientX,
-        selectedNode.offsetTop - event.clientY
-    ];
-    document.addEventListener('mousemove',onMouseMove,true);
-    document.addEventListener('mouseup',onMouseUp,true);
-}
-
 function onMouseUp(event) {
     console.log("MOUSE UP!");
     let pressedButton=event.button;
@@ -177,17 +104,44 @@ function onMouseUp(event) {
 /**
  * @param {Event} event - The event
  */
+ function onRightClick(event) {
+    event.preventDefault();
+    let element=event.target;
+    if(state===0)
+    {
+        /**
+         * @brief The state when the user will to create an edge between nodes
+         */
+        startCreateEdgeConection(element, event.clientX, event.clientY);
+    }
+    else if(state===2){
+        /**
+         * @brief The state when the creation of edge interaction is ended.
+         */
+         endCreateEdgeConection(element);
+    }
+    else if(state===-1)
+    {
+        /**
+         * @brief The state when an edge has been setted right now, then the follow event on the other node is not activated.
+         */
+        state=0;
+    }
+}
+
+/**
+ * @param {Event} event - MouseMove Event
+ */
 function onMouseMove(event) {
     event.preventDefault();
-    
     let x = event.clientX,
         y = event.clientY;
+
     if(state===1){
         selectedNode.style.left = (x + offset[0]) + 'px';
         selectedNode.style.top  = (y + offset[1]) + 'px';
         updateEdges(selectedNode);
     }else if(state===2){
-        // console.log(selectedNode);
         calculateEndEdge(
             creatingEdge.element,
             getCenteredPixels(selectedNode.getBoundingClientRect().left),
@@ -197,31 +151,113 @@ function onMouseMove(event) {
         );
     }
 }
+
+function getNodes(){
+    for(let i=0; i<nodesElements.length; i++){
+        nodesElements[i].removeEventListener('mousedown',onMouseDown,true);
+        nodesElements[i].addEventListener('mousedown',onMouseDown,true);
+        nodesElements[i].addEventListener('contextmenu',onRightClick,true);
+
+        updateEdges(nodesElements[i]);
+    }
+}
+
 function getCenteredPixels(value){
     return value+nodeHalfLength;
 }
 
 /**
- * @param {Event} event - The event
+ * @param {Element} element - The node element
+ * @param {Number} mouseX - The position x of mouse
+ * @param {Number} mouseY - The position y of mouse
  */
-function onDragEndsEvent(event) {
-    let element=event.target;
-    let x=getCenteredPixels(event.clientX),
-        y=getCenteredPixels(event.clientY);
-    event.target.style.left=x+"px";
-    event.target.style.top=y+"px";
-    
-    updateEdges(event.target);
+ function startCreateEdgeConection(element, mouseX, mouseY){
+            
+    if(element.classList.contains('identifier')){
+        selectedNode=element.parentElement;
+    }else {
+        selectedNode=element;
+    }
+
+    offset = [
+        selectedNode.offsetLeft - mouseX,
+        selectedNode.offsetTop - mouseY
+    ];
+
+    creatingEdge={
+        element: edgeTemplate.cloneNode(false),
+        begin: selectedNode.id.replace('node-',''),
+        end: undefined,
+    }
+    edgesContainer.appendChild(creatingEdge.element);
+
+    calculateStartEdge(
+        creatingEdge.element,
+        selectedNode.getBoundingClientRect().left,
+        selectedNode.getBoundingClientRect().top
+    );
+
+    document.addEventListener('contextmenu',onRightClick,true);
+    document.addEventListener('mousemove',onMouseMove,true);
+    state=2; // The follow state
+ }
+
+/**
+ * @param {Element} element - The node element
+ */
+function endCreateEdgeConection(element){
+    document.removeEventListener('contextmenu',onRightClick,true);
+    document.removeEventListener('mousemove',onMouseMove,true);
+    document.removeEventListener('mouseup',onMouseUp,true);
+
+    if(element.classList.contains('identifier')&&selectedNode!=element.parentElement){
+        selectedNode=element.parentElement;
+    }else if(element.classList.contains('node')&&selectedNode!=element){
+        selectedNode=element;
+    }else{
+        /**
+         * The element is not a node, then the edge creation is canceled.
+        */
+        edgesContainer.removeChild(creatingEdge.element);
+        creatingEdge=null;
+        state=0;
+        return false;
+    }
+
+    state=-1;
+
+    creatingEdge.end=selectedNode.id.replace('node-','');
+
+    let id=creatingEdge.begin+creatingEdge.end;
+    let id2=creatingEdge.end+creatingEdge.begin;
+    let edgeID=`edge-${id}`;
+
+    if(document.getElementById(edgeID)|| document.getElementById(`edge-${id2}`)){
+        /**
+         * The edge already exists, then the edge creation  is removed.
+         */
+        edgesContainer.removeChild(creatingEdge.element);
+        creatingEdge=null;
+        return false;
+    }
+
+    creatingEdge.element.id=edgeID;
+    creatingEdge.element.innerHTML=`
+        <span class="track-spot" id="edge-${id}-track-spot">-1</span>
+        <input class="weight" type="number" value="0"
+            id="edge-${id}-weight"
+            name="edge-${id}-weight">
+    `;
+    edges.push(creatingEdge);
+    recalculateEdgeWithIDs(creatingEdge.begin,creatingEdge.end);
+    return true;
 }
 
-function updateEdges(element){
-    let idToSearch=element.id.replace("node-", "");
+function updateEdges(nodeElement){
+    let idToSearch=nodeElement.id.replace("node-", "");
     for(let i=0; i<edges.length; i++){
-        let begin=edges[i].begin;
-        let end=edges[i].end;
-        if(idToSearch==begin||idToSearch==end){
-            // console.log("FOUNDED:",begin,"-",end);
-            recalculateEdgeWithIDs(begin, end);
+        if(idToSearch==edges[i].begin||idToSearch==edges[i].end){
+            recalculateEdgeWithIDs(edges[i].begin, edges[i].end);
         }
     }
 }
@@ -230,12 +266,14 @@ function recalculateEdgeWithPosition(edge, x1, y1, x2, y2){
     calculateStartEdge(edge, x1,y1);
     calculateEndEdge(edge,x1,y1,x2,y2);
 }
+
 function recalculateEdgeWithElementAndPosition(edge, begin, x2, y2){
     let x1=begin.getBoundingClientRect().left,
         y1=begin.getBoundingClientRect().top;
     
     recalculateEdgeWithPosition(edge, x1, y1, x2, y2)
 }
+
 function recalculateEdgeWithElements(edge, nodeBegin, nodeEnd){
     let x1=nodeBegin.getBoundingClientRect().left,
         y1=nodeBegin.getBoundingClientRect().top;
@@ -244,6 +282,7 @@ function recalculateEdgeWithElements(edge, nodeBegin, nodeEnd){
     
     recalculateEdgeWithPosition(edge, x1, y1, x2, y2)
 }
+
 function recalculateEdgeWithIDs(begin, end){
     let edge=document.getElementById(`edge-${begin+end}`);
     let nodeBegin=document.getElementById(`node-${begin}`);
@@ -256,15 +295,12 @@ function calculateStartEdge(edge, x1, y1){
     edge.style.left=getCenteredPixels(x1)+"px";
     edge.style.top=getCenteredPixels(y1)+"px";
 }
+
 function calculateEndEdge(edge, x1, y1, x2, y2){
     let dx=x2-x1,
         dy=y2-y1;
     let length=Math.sqrt(dx**2+dy**2);
     let angle=180*Math.atan(dy/dx)/Math.PI;
-    /* 
-    console.log("X",x2, x1, dx);
-    console.log("Y",y2, y1, dy);
-    console.log("Length",length); */
 
     edge.style.width=length+"px";
     if(dx>=0){
@@ -275,20 +311,3 @@ function calculateEndEdge(edge, x1, y1, x2, y2){
         edge.classList.add('mirrored');
     }
 }
-/* function calculateEndEdgeWithBegin(edge, nodeBegin, x2, y2){
-    let x1=nodeBegin.getBoundingClientRect().left,
-        y1=nodeBegin.getBoundingClientRect().top;
-    let dx=x2-x1,
-        dy=y2-y1;
-    let length=Math.sqrt(dx**2+dy**2);
-    let angle=180*Math.atan(dy/dx)/Math.PI;
-
-    edge.style.width=length+"px";
-    if(dx>=0){
-        edge.style.transform=`rotate(${angle}deg)`;
-        edge.classList.remove('mirrored');
-    }else{
-        edge.style.transform=`rotate(${180+angle}deg)`;
-        edge.classList.add('mirrored');
-    }
-} */

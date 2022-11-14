@@ -25,6 +25,7 @@ body{
     border: 2px solid black;
     background-color: white;
     font-weight: 600;
+    cursor: pointer;
 }
 .node#node-A{
     top: calc(50% - 1.5rem);
