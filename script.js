@@ -1,4 +1,5 @@
 const nodeHalfLength=42;
+const deleteDropzoneID='delete-dropzone';
 let state=0;
 
 let nodesCounter=3;
@@ -65,6 +66,81 @@ window.addEventListener('resize', function(event) {
 /**
  * @param {Event} event - The event
  */
+function onTouchStart(event) {
+    event.preventDefault();
+    console.log("TOUCH START!", state);
+
+    if(state===2){
+        /**
+         * The element is not a node, then the edge creation is canceled.
+        */
+        document.removeEventListener('contextmenu',onRightClick,true);
+        document.removeEventListener('mousemove',onMouseMove,true);
+        document.removeEventListener('mouseup',onMouseUp,true);
+        edgesContainer.removeChild(creatingEdge.element);
+        creatingEdge=null;
+        state=0;
+        return false;
+    }else if(state===0){
+        console.log(event);
+        /* switch (event.touches.length) {
+            case 1: 
+                console.log("A");
+                break;
+            case 2: 
+                console.log("B");
+                break;
+            case 3: 
+                console.log("C");
+                break;
+            default: 
+                console.log("DEFAULT");
+                break;
+        } */
+        if(event.target.classList.contains('identifier')){
+            selectedNode=event.target.parentElement;
+        }else{
+            selectedNode=event.target;
+        }
+        offset = [
+            selectedNode.offsetLeft - event.clientX,
+            selectedNode.offsetTop - event.clientY
+        ];
+    
+        document.addEventListener('touchmove',onTouchMove,true);
+        document.addEventListener('mouseup',onMouseUp,true);
+        state=1;
+    }
+
+}
+
+let deleteDropzone=document.getElementById(deleteDropzoneID);
+
+function enableDeleteNode(){
+    deleteDropzone.classList.add('droppable');
+    deleteDropzone.addEventListener('mouseenter',()=>{+
+        // console.log(event);
+        deleteDropzone.classList.add('hover');
+    });
+    deleteDropzone.addEventListener('mouseleave',()=>{
+        deleteDropzone.classList.remove('hover');
+    });
+}
+function disableDeleteNode(){
+    deleteDropzone.classList.remove('droppable');
+    deleteDropzone.classList.remove('hover');
+    // deleteDropzone.removeEventListener('mouseover',()=>{
+    //     console.log("REMOVIG EVENT");
+    //     deleteDropzone.classList.add('hover');
+    // });
+    // deleteDropzone.removeEventListener('mouseleave',()=>{
+    //     console.log("REMOVIG EVENT 2");
+    //     deleteDropzone.classList.remove('hover');
+    // });
+}
+/**
+ * @param {Event} event - The event
+ */
 function onMouseDown(event) {
     console.log("MOUSE DOWN!", state);
 
@@ -72,6 +148,8 @@ function onMouseDown(event) {
     if(pressedButton===2){
         return;
     }
+
+    enableDeleteNode();
 
     if(state===2){
         /**
@@ -103,6 +181,34 @@ function onMouseDown(event) {
 }
 
 /**
+ * @param {Event} event - MouseMove Event
+ */
+ function onMouseMove(event) {
+    // event.stopPropagation()
+    // event.preventDefault();
+    let x = event.clientX,
+        y = event.clientY;
+    
+    if(state===1){
+        selectedNode.style.left = (x + offset[0]) + 'px';
+        selectedNode.style.top  = (y + offset[1]) + 'px';
+        updateEdges(selectedNode);
+    }else if(state===2){
+        calculateEndEdge(
+            creatingEdge.element,
+            getCenteredPixels(selectedNode.getBoundingClientRect().left),
+            getCenteredPixels(selectedNode.getBoundingClientRect().top),
+            x,
+            y
+        );
+    }
+}
+async function deleteNode(){
+    nodesContainer.removeChild(selectedNode);
+    let modal=await openModal('danger');
+    console.log("RESPONSE:",modal);
+}
+/**
  * @param {Event} event - MouseUp Event
  */
 function onMouseUp(event) {
@@ -111,10 +217,21 @@ function onMouseUp(event) {
     if(pressedButton==2){
         return;
     }
+    let x = event.clientX,
+        y = event.clientY;
+
+    if(state===1){
+        let other=document.elementsFromPoint(x,y);
+        let deleteZone=other[other.length-2];
+        if(deleteZone.id===deleteDropzoneID){
+            deleteNode();
+        }
+    }
     state=0;
     document.removeEventListener('mousemove', onMouseMove,true);
     document.removeEventListener('mouseup',onMouseUp,true);
     selectedNode=null;
+    disableDeleteNode();
 }
 
 /**
@@ -146,12 +263,13 @@ function onMouseUp(event) {
 }
 
 /**
- * @param {Event} event - MouseMove Event
+ * @param {TouchEvent} event - MouseMove Event
  */
-function onMouseMove(event) {
-    event.preventDefault();
-    let x = event.clientX,
-        y = event.clientY;
+ function onTouchMove(event) {
+    // event.preventDefault();
+    console.log(event);
+    let x = event.touches[0].clientX,
+        y = event.touches[0].clientY;
 
     if(state===1){
         selectedNode.style.left = (x + offset[0]) + 'px';
@@ -173,6 +291,9 @@ function getNodes(){
         nodesElements[i].removeEventListener('mousedown',onMouseDown,true);
         nodesElements[i].addEventListener('mousedown',onMouseDown,true);
         nodesElements[i].addEventListener('contextmenu',onRightClick,true);
+
+        nodesElements[i].removeEventListener('touchstart', onMouseDown, false);
+        nodesElements[i].addEventListener('touchstart', onTouchStart, false);
 
         updateEdges(nodesElements[i]);
     }

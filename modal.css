@@ -1,0 +1,68 @@
+:root {
+    --margin-1: 00.5rem;
+
+}
+.modal-board{
+    position: fixed;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.406);
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.modal{
+    width: 25rem;
+    background-color: white;
+    border-radius: var(--margin-1);
+    font-size: 0.8rem;
+    /* overflow: hidden; */
+}
+.modal input,button{
+    font-size: 0.8rem;
+}
+.modal-header{
+    display: grid;
+    grid-template-columns: 1fr [close-button] 1.25rem;
+    justify-content: flex-start;
+    align-items: center;
+    padding: var(--margin-1);
+    border-radius: var(--margin-1);
+    color: white;
+    font-weight: 700;
+}
+.modal-danger .modal-header{
+    background-color: var(--color-red-1);
+}
+.modal-close-button{
+    grid-column: close-button;
+    width: 100%;
+    /* height: 100%; */
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    --color-button: var(--color-red-1);
+}
+.modal-body{
+    padding: var(--margin-1);
+}
+.modal-options{
+    padding: var(--margin-1);   
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--margin-1);
+}
+.text-button{
+    padding: calc(var(--margin-1) / 2);
+    border-radius: var(--margin-1);
+    min-width: 2rem;
+}
+.danger-button{
+    --color-button: var(--color-red-1);
+}

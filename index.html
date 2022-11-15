@@ -6,10 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kruskal Algorithm</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal.css">
 </head>
 <body>
+    <section class="modal-board" id="modal-board">
+        <article class="modal modal-danger" id="modal-danger">
+            <div class="modal-header">
+                <div>
+                    ¡CUIDADO!
+                </div>
+                <button class="modal-close-button" id="modal-danger-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="" class="close-icon bi bi-x-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Estás segur@ que deseas borrar el elemento?
+            </div>
+            <div class="modal-options">
+                <button class="text-button danger-button" id="modal-danger-success">
+                    Sí
+                </button>
+                <button class="text-button" id="modal-danger-cancel">
+                    No
+                </button>
+            </div>
+        </article>
+    </section>
     <div class="treeboard">
         <button class="add-node" id="add-node">+</button>
+        <div class="delete-dropzone" id="delete-dropzone">
+            <div class="delete-dropzone--inside">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="delete-icon bi bi-trash3-fill" viewBox="0 0 16 16">
+                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                </svg>
+            </div>
+        </div>
         <div class="nodes-container" id="nodes-container">
             <div class="node-js node" id="node-A" draggable="false">
                 <input class="identifier" id="node-A-name" type="text" name="node-A-name" value="A">
@@ -23,7 +56,7 @@
         </div>
         <form id="edges-form">
             <button class="sort-tree" id="sort-tree" type="submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="blue" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="" class="check-icon bi bi-check-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                   </svg>
             </button>
@@ -51,5 +84,6 @@
 
     </div>
     <script src="script.js"></script>
+    <script src="modal.js"></script>
 </body>
 </html>

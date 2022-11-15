@@ -2,7 +2,15 @@
 :root{
     font-family: 'Sono', sans-serif;
     --color-1: #000000;
+    --color-grey-1: #bfbfbf;
+    --color-grey-2: #f3f3f3;
     --color-blue: #139ef5;
+    --color-red-1: #e3155a;
+    --color-red-2: #f4e1e1;
+    --color-button: #000000;
+}
+:root *{
+    box-sizing: border-box;
 }
 html{
     font-size: 28px;
@@ -19,6 +27,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 2;
     height: 3rem;
     width: 3rem;
     margin: 0;
@@ -41,54 +50,101 @@ body{
     top: calc(50% - 1.5rem - 6rem);
     left: calc(50% - 1.5rem);
 }
+button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255);
+    border: 2px solid var(--color-button);
+    font-weight: 600;
+    box-shadow: 0px 5px 4px 0px rgba(120, 120, 120, 0.31);
+
+    transition: 0.2s ease all;
+    transform-origin: center;
+    color: var(--color-button);
+}
+button *{
+    color: var(--color-button);
+}
+button:hover{
+    background-color: rgb(244, 244, 244);
+}
+button:active{
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 3px 2px 0px rgba(82, 82, 82, 0.302);
+    transform: scale(0.95);
+}
 .sort-tree{
     top: 1rem;
     right: 1rem;
-    border: 2px solid var(--color-blue);
+    
+    --color-button: var(--color-blue);
+}
+button .check-icon,
+button .close-icon{
+    fill: var(--color-button);
 }
 .add-node{
     top: 1rem;
     right: 3.5rem;
-    border: 2px solid black;
 }
 .add-node,
 .sort-tree{
     position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 2rem;
     width: 2rem;
     margin: 0;
     padding: 0;
-    border-radius: 50%;
-    background-color: white;
-    font-weight: 600;
-    box-shadow: 0px 5px 4px 0px rgb(191, 191, 191);
+}
+.delete-dropzone{
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    height: 3.5rem;
+    width: 4.5rem;
+    background-color: var(--color-grey-2);
+    border-radius: 10px;
 
-    transition: 0.2s ease all;
-    transform-origin: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: 100% 100%;
+    transition: 0.3s ease all;
 }
-.add-node:hover,
-.sort-tree:hover{
-    background-color: rgb(244, 244, 244);
-}
-.add-node:active,
-.sort-tree:active{
-    background-color: rgb(255, 255, 255);
-    box-shadow: 0px 3px 2px 0px rgb(124, 124, 124);
-    transform: scale(0.95);
+.delete-dropzone--inside{
+    height: 90%;
+    width: 90%;
+    border: dashed 3px var(--color-grey-1);
+    background-color: transparent;
+    border-radius: 10px;
     
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.bi.bi-check-circle-fill{
-    fill: var(--color-blue);
+.delete-dropzone.droppable{
+    background-color: var(--color-red-2);
+    /* transform: scale(1.02); */
+}
+.delete-dropzone.droppable.hover{
+    transform: scale(1.05);
+}
+.delete-icon{
+    fill: var(--color-grey-1);
+}
+.delete-dropzone.droppable .delete-dropzone--inside{
+    border: dashed 3px var(--color-red-1);
+}
+.delete-dropzone.droppable .delete-icon{
+    fill: var(--color-red-1);
 }
 .edge{
     position: relative;
     height: 2px;
     width: 0px;
     background-color: black;
-    z-index: -1;
+    z-index: 1;
     transform-origin: 0% 0%;
 }
 .node .identifier{
