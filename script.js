@@ -12,7 +12,6 @@ class TreeNode{
         this.element=element;
         if(element!=null&&nameInput!=null){
             this.nameInput=document.getElementById(`node-name-${id}`);
-            // console.log(this.nameInput);
             this.name=this.nameInput.target.value;
         }
     }
@@ -34,8 +33,8 @@ class Edge{
     }
     setWeightInput(id){
         this.weightInput=document.getElementById(`edge-weight-${id}`);
+        this.weightInput.addEventListener("input",onInputEvent,true);
         this.weight=Number(this.weightInput.value);
-
     }
 }
 
@@ -155,43 +154,6 @@ addNodeButton.addEventListener('click',
 );
 
 window.addEventListener('resize', (event) => initNodes(), true);
-
-// /**
-//  * @param {Event} event - The event
-//  */
-// function onTouchStart(event) {
-//     event.preventDefault();
-//     console.log("TOUCH START!", state);
-
-//     if(state===2){
-//         /**
-//          * The element is not a node, then the edge creation is canceled.
-//         */
-//         document.removeEventListener('contextmenu',onRightClick,true);
-//         document.removeEventListener('mousemove',onMouseMove,true);
-//         document.removeEventListener('mouseup',onMouseUp,true);
-//         edgesContainer.removeChild(creatingEdge.element);
-//         creatingEdge=null;
-//         state=0;
-//         return false;
-//     }else if(state===0){
-//         console.log(event);
-//         if(event.target.classList.contains('identifier')){
-//             selectedNode=event.target.parentElement;
-//         }else{
-//             selectedNode=event.target;
-//         }
-//         offset = [
-//             selectedNode.offsetLeft - event.clientX,
-//             selectedNode.offsetTop - event.clientY
-//         ];
-    
-//         document.addEventListener('touchmove',onTouchMove,true);
-//         document.addEventListener('mouseup',onMouseUp,true);
-//         state=1;
-//     }
-
-// }
 
 /**
  * @param {Event} event - The event
@@ -336,19 +298,19 @@ function onMouseUp(event) {
 }
 
 /**
- * @param {Element} element - The node element
  * @param {Number} mouseX - The position x of mouse
  * @param {Number} mouseY - The position y of mouse
  */
  function startCreateEdgeConection(mouseX, mouseY){
-
+    
     offset = [
         selectedNode.element.offsetLeft - mouseX,
         selectedNode.element.offsetTop - mouseY
     ];
 
     creatingEdge=new Edge(
-        selectedNode.begin,undefined,edgeTemplate.cloneNode(false)
+        edgeTemplate.cloneNode(false),
+        selectedNode.id
     );
     edgesContainer.appendChild(creatingEdge.element);
 
@@ -360,24 +322,19 @@ function onMouseUp(event) {
 
     document.addEventListener('contextmenu',onRightClick,true);
     document.addEventListener('mousemove',onMouseMove,true);
- }
+}
 
-/**
- * @param {Element} element - The node element
- */
-function endCreateEdgeConection(element){
+function endCreateEdgeConection(){
     creatingEdge.end=selectedNode.id;
 
     let id=creatingEdge.begin+creatingEdge.end;
+    let id2=creatingEdge.end+creatingEdge.begin;
     const edgeID=`edge-${id}`;
-
-    if(
-        document.getElementById(edgeID) ||
-        document.getElementById(`edge-${creatingEdge.end+creatingEdge.begin}`))
-    {
+    if(id in edges||id2 in edges){
         /**
          * @brief The edge already exists, then the edge creation  is removed.
          */
+        
         edgesContainer.removeChild(creatingEdge.element);
         creatingEdge=null;
         return false;
@@ -390,8 +347,9 @@ function endCreateEdgeConection(element){
             id="edge-weight-${id}"
             name="edge-weight-${id}">
     `;
-    creatingEdge.setWeightInput(edgeID);
-    edges[edgeID]=creatingEdge;
+    console.log(creatingEdge);
+    creatingEdge.setWeightInput(id);
+    edges[id]=creatingEdge;
     recalculateEdge(creatingEdge);
     return true;
 }
@@ -540,6 +498,19 @@ async function deleteNode(){
 
 ////////////////////////// CHECK TREE
 
+var clearTree = document.getElementById('clear-tree');
+clearTree.addEventListener("click", clearingTree,true);
+function clearingTree(){
+    
+    edges.forEach((edge,index)=>{
+        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge.begin+edge.end}`);
+        let edgeElement=document.getElementById(`edge-${edge.begin+edge.end}`);
+        edgeElement.style.backgroundColor="var(--color-1)";
+        edgeSpotElement.innerHTML=null;
+        edgeSpotElement.classList.remove("render");
+    });
+}
+
 var sortTree = document.getElementById('sort-tree');
 sortTree.addEventListener("click", startSortTree);
 
@@ -579,7 +550,7 @@ function calculateKruskalAlgorithm(edges){
     let edgesNotConnected=edges.filter((edge,index)=>{
         let begin=edge.begin;
         let end=edge.end;
-        if(selectedNode.DCUFind(begin)!=DCUFind(end)){
+        if(DCUFind(begin)!=DCUFind(end)){
             DCUUnion(x,y);
         }
         /* let containsBegin=nodesVisited.includes(edge.begin);
@@ -615,19 +586,6 @@ function calculateKruskalAlgorithm(edges){
         amountOfConected++;
     }
     console.log(nodesVisited,nodesNotVisited); */
-}
-
-var clearTree = document.getElementById('clear-tree');
-clearTree.addEventListener("click", clearingTree,true);
-function clearingTree(){
-    
-    edges.forEach((edge,index)=>{
-        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge.begin+edge.end}`);
-        let edgeElement=document.getElementById(`edge-${edge.begin+edge.end}`);
-        edgeElement.style.backgroundColor="var(--color-1)";
-        edgeSpotElement.innerHTML=null;
-        edgeSpotElement.classList.remove("render");
-    });
 }
 let parent, rank;
 function DCUInit(){
@@ -671,8 +629,4 @@ function onInputEvent(input){
     let inputID=inputElement.id.replace("edge-weight-","");
     
     edges[inputID].weight=Number(inputElement.value);
-    // if(inputElement.value===''){
-    //     inputElement.value=0
-    // }
-    // console.log(inputElement.value);
 }
