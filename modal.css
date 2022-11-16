@@ -14,10 +14,20 @@
 }
 .modal{
     width: 25rem;
+    max-height: calc(100vh - 4rem);
+    position: relative;
     background-color: white;
     border-radius: var(--margin-1);
     font-size: 0.8rem;
-    /* overflow: hidden; */
+    display: none;
+    color: black;
+    overflow: auto;
+}
+.modal.modal-danger{
+    --color-button: var(--color-red-1);
+}
+.modal.modal-info{
+    width: 28rem;
 }
 .modal input,button{
     font-size: 0.8rem;
@@ -28,8 +38,9 @@
     justify-content: flex-start;
     align-items: center;
     padding: var(--margin-1);
-    border-radius: var(--margin-1);
+    background-color: var(--color-grey-1);
     color: white;
+    border-radius: var(--margin-1);
     font-weight: 700;
 }
 .modal-danger .modal-header{
@@ -45,11 +56,13 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    
-    --color-button: var(--color-red-1);
 }
 .modal-body{
+    margin: var(--margin-1);
     padding: var(--margin-1);
+    position: relative;
+    max-height: 100%;
+    box-sizing: border-box;
 }
 .modal-options{
     padding: var(--margin-1);   
@@ -65,4 +78,19 @@
 }
 .danger-button{
     --color-button: var(--color-red-1);
+}
+h1,h2,h3{
+    margin: 0.5rem 0;
+}
+.data-sources{
+    font-size: 0.5rem;
+}
+.autors{
+    font-size: 0.75rem;
+}
+.autors a{
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
 }

@@ -87,6 +87,12 @@ button:active{
     
     --color-button: var(--color-grey-1);
 }
+.info-button{
+    bottom: 1rem;
+    left: 1rem;
+    
+    --color-button: var(--color-grey-1);
+}
 button .check-icon,
 button .close-icon{
     fill: var(--color-button);
@@ -97,7 +103,8 @@ button .close-icon{
 }
 .add-node,
 .sort-tree,
-.clear-tree{
+.clear-tree,
+.info-button{
     position: absolute;
     height: 2rem;
     width: 2rem;

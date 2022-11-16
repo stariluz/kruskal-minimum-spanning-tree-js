@@ -585,8 +585,8 @@ function DSUFind(nodeKey){
     return parent[nodeKey];
 }
 function DSUUnion(nodeKeyA,nodeKeyB){
-    let parentA = DCUFind(nodeKeyA);
-    let parentB = DCUFind(nodeKeyB);
+    let parentA = DSUFind(nodeKeyA);
+    let parentB = DSUFind(nodeKeyB);
 
     if (parentA != parentB) {
         // The nodes parents aren't equals
