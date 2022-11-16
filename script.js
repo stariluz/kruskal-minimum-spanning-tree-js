@@ -546,13 +546,13 @@ function calculateKruskalAlgorithm(edges){
     let edgesVisited="";
     let edgesNotVisited="";
     let amountOfConected=0;
-    DCUInit();
+    DSUInit();
     edges.forEach((edge,index)=>{
         let begin=edge[1].begin;
         let end=edge[1].end;
         let edgeSpotElement=document.getElementById(`edge-track-spot-${edge[0]}`);
         let edgeElement=edge[1].element;
-        if(DCUUnion(begin,end)){
+        if(DSUUnion(begin,end)){
             edgeElement.style.backgroundColor="var(--color-blue)";
             edgeSpotElement.innerHTML=amountOfConected+1;
             edgeSpotElement.classList.add("render");
@@ -568,7 +568,7 @@ function calculateKruskalAlgorithm(edges){
 }
 
 let parent, rank;
-function DCUInit(){
+function DSUInit(){
     parent = {};
     rank = {};
 
@@ -577,14 +577,14 @@ function DCUInit(){
         rank[key]=1;
     }
 }
-function DCUFind(nodeKey){
+function DSUFind(nodeKey){
     if (parent[nodeKey] === undefined){
         return nodeKey;
     }
-    parent[nodeKey]=DCUFind(parent[nodeKey]);
+    parent[nodeKey]=DSUFind(parent[nodeKey]);
     return parent[nodeKey];
 }
-function DCUUnion(nodeKeyA,nodeKeyB){
+function DSUUnion(nodeKeyA,nodeKeyB){
     let parentA = DCUFind(nodeKeyA);
     let parentB = DCUFind(nodeKeyB);
 
