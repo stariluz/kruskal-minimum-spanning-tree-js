@@ -502,9 +502,9 @@ var clearTree = document.getElementById('clear-tree');
 clearTree.addEventListener("click", clearingTree,true);
 function clearingTree(){
     
-    edges.forEach((edge,index)=>{
-        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge.begin+edge.end}`);
-        let edgeElement=document.getElementById(`edge-${edge.begin+edge.end}`);
+    Object.entries(edges).forEach((edge,index)=>{
+        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge[0]}`);
+        let edgeElement=edge[1].element;
         edgeElement.style.backgroundColor="var(--color-1)";
         edgeSpotElement.innerHTML=null;
         edgeSpotElement.classList.remove("render");
@@ -537,87 +537,73 @@ function sortResults(edges){
             return 1;
         }
     })
-    console.log(sorted);
     calculateKruskalAlgorithm(sorted);
 }
 /**
  * @param {Array} edges - The edges with values
  */
 function calculateKruskalAlgorithm(edges){
-    let nodesVisited="";
-    let nodesNotVisited="";
+    let edgesVisited="";
+    let edgesNotVisited="";
     let amountOfConected=0;
-    let edgesNotConnected=edges.filter((edge,index)=>{
-        let begin=edge.begin;
-        let end=edge.end;
-        if(DCUFind(begin)!=DCUFind(end)){
-            DCUUnion(x,y);
-        }
-        /* let containsBegin=nodesVisited.includes(edge.begin);
-        let containsEnd=nodesVisited.includes(edge.end);
-        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge.begin+edge.end}`);
-        let edgeElement=document.getElementById(`edge-${edge.begin+edge.end}`);
-        if(containsBegin&&containsEnd){
+    DCUInit();
+    edges.forEach((edge,index)=>{
+        let begin=edge[1].begin;
+        let end=edge[1].end;
+        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge[0]}`);
+        let edgeElement=edge[1].element;
+        if(DCUUnion(begin,end)){
+            edgeElement.style.backgroundColor="var(--color-blue)";
+            edgeSpotElement.innerHTML=amountOfConected+1;
+            edgeSpotElement.classList.add("render");
+            edgesVisited+=begin+end;
+            amountOfConected++;
+        }else{
             edgeElement.style.backgroundColor="var(--color-1)";
             edgeSpotElement.innerHTML=null;
             edgeSpotElement.classList.remove("render");
-            nodesNotVisited+=edge.begin+edge.end;
-            return true;
-        }else{
-            edgeElement.style.backgroundColor="var(--color-blue)";
-            edgeSpotElement.innerHTML=index+1;
-            edgeSpotElement.classList.add("render");
-            nodesVisited+=edge.begin+edge.end;
-            amountOfConected++;
-            return false;
-        } */
+            edgesNotVisited+=begin+end;
+        }
     });
-    /* console.log(amountOfConected);
-    let amountNotConected=nodesElements.length-amountOfConected-1;
-    console.log(    );
-    for(let i=0; i<amountNotConected; i++){
-        let edge=edgesNotConnected[i];
-        let edgeSpotElement=document.getElementById(`edge-track-spot-${edge.begin+edge.end}`);
-        let edgeElement=document.getElementById(`edge-${edge.begin+edge.end}`);
-        edgeElement.style.backgroundColor="var(--color-blue)";
-        edgeSpotElement.innerHTML=amountOfConected+1;
-        edgeSpotElement.classList.add("render");
-        nodesVisited+=edge.begin+edge.end;
-        amountOfConected++;
-    }
-    console.log(nodesVisited,nodesNotVisited); */
 }
+
 let parent, rank;
 function DCUInit(){
     parent = {};
     rank = {};
 
-    for (let i = 0; i < nodesCounter; i++) {
-        parent[nodesElements]
-        parent.push(undefined);
-        rank.push(1);
+    for (let key in nodes) {
+        parent[key]=undefined;
+        rank[key]=1;
     }
 }
-function DCUFind(index){
-    if (parent[index] === undefined)
-        return index;
-
-    return parent[index] = DCUFind(parent[index]);
+function DCUFind(nodeKey){
+    if (parent[nodeKey] === undefined){
+        return nodeKey;
+    }
+    parent[nodeKey]=DCUFind(parent[nodeKey]);
+    return parent[nodeKey];
 }
-function DCUUnion(x,y){
-    let s1 = DCUFind(x);
-    let s2 = DCUFind(y);
+function DCUUnion(nodeKeyA,nodeKeyB){
+    let parentA = DCUFind(nodeKeyA);
+    let parentB = DCUFind(nodeKeyB);
 
-    if (s1 != s2) {
-        if (rank[s1] < rank[s2]) {
-            parent[s1] = s2;
-            rank[s2] += rank[s1];
+    if (parentA != parentB) {
+        // The nodes parents aren't equals
+
+        if (rank[parentA] < rank[parentB]) {
+            // The node A parent is below the node B parent
+            parent[parentA] = parentB;
+            rank[parentB] += rank[parentA];
         }
         else {
-            parent[s2] = s1;
-            rank[s1] += rank[s2];
+            // The node A parent is above the node B parent
+            parent[parentB] = parentA;
+            rank[parentA] += rank[parentB];
         }
+        return true;
     }
+    return false;
 }
 
 /**
