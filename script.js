@@ -41,14 +41,7 @@ class Edge{
 let nodesCounter=3;
 let selectedNode;
 let nodesElements=[];
-let nodes={
-    /* 'A': {
-        id: 'A',
-        name: 'A',
-        element: document.getElementById('node-A'),
-        nameInput: document.getElementById('node-name-A'),
-    } */
-};
+let nodes={};
 let nodeTemplate=document.createElement("div");
 nodeTemplate.className="node-js node";
 nodeTemplate.draggable=false;
@@ -87,8 +80,8 @@ function main() {
 }
 function initEdges(){
     for(let edgeKey in edges){
-        edges[edgeKey].setWeightInput(edgeKey);
-        edges[edgeKey].weightInput.addEventListener("input", onInputEvent, true);
+        // edges[edgeKey].setWeightInput(edgeKey);
+        // edges[edgeKey].weightInput.addEventListener("input", onInputEvent, true);
     }
 }
 
@@ -508,6 +501,7 @@ function clearingTree(){
         edgeElement.style.backgroundColor="var(--color-1)";
         edgeSpotElement.innerHTML=null;
         edgeSpotElement.classList.remove("render");
+        totalWeightContainer.style.display="none";
     });
 }
 
@@ -539,6 +533,11 @@ function sortResults(edges){
     })
     calculateKruskalAlgorithm(sorted);
 }
+
+let totalWeightValue=0;
+let totalWeightElement=document.getElementById("total-weight");
+let totalWeightContainer=document.getElementById("weight-container");
+
 /**
  * @param {Array} edges - The edges with values
  */
@@ -546,6 +545,7 @@ function calculateKruskalAlgorithm(edges){
     let edgesVisited="";
     let edgesNotVisited="";
     let amountOfConected=0;
+    totalWeightValue=0;
     DSUInit();
     edges.forEach((edge,index)=>{
         let begin=edge[1].begin;
@@ -553,6 +553,7 @@ function calculateKruskalAlgorithm(edges){
         let edgeSpotElement=document.getElementById(`edge-track-spot-${edge[0]}`);
         let edgeElement=edge[1].element;
         if(DSUUnion(begin,end)){
+            totalWeightValue+=edge[1].weight;
             edgeElement.style.backgroundColor="var(--color-blue)";
             edgeSpotElement.innerHTML=amountOfConected+1;
             edgeSpotElement.classList.add("render");
@@ -565,6 +566,8 @@ function calculateKruskalAlgorithm(edges){
             edgesNotVisited+=begin+end;
         }
     });
+    totalWeightElement.innerText=totalWeightValue;
+    totalWeightContainer.style.display="block";
 }
 
 let parent, rank;

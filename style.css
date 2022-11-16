@@ -22,6 +22,19 @@ body{
     padding: 0;
     margin: 0;
 }
+.weight-container{
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-blue);
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.4rem;
+    color: white;
+    display: none;
+    text-align: center;
+}
 .node{
     position: absolute;
     display: flex;
@@ -154,7 +167,7 @@ button .close-icon{
     fill: var(--color-red-1);
 }
 .edge{
-    position: relative;
+    position: absolute;
     height: 2px;
     width: 0px;
     background-color: black;
