@@ -1,0 +1,110 @@
+.edge{
+    position: absolute;
+    height: 2px;
+    width: 0px;
+    background-color: black;
+    z-index: 1;
+    transform-origin: 0% 0%;
+    
+    font-size: 0.5rem;
+}
+.weight {
+    min-width: 0.5rem;
+    height: 0.8rem;
+    margin: 0rem;
+    padding: 0rem 0.25rem;
+    box-sizing: content-box;
+    text-align: center;
+    
+    font: inherit;
+    color: blue;
+    background-color: rgb(245, 245, 245);
+    border-radius: 0.25rem;
+    border: 0;
+    border-bottom: 1px solid rgb(205, 205, 205);
+    outline: none;
+
+    transition: 10ms ease all;
+    position: absolute;
+    transform-origin: 50% 50%;
+    transform: rotate(0deg) translateX(-50%);
+    left: 50%;
+    top: unset;
+    bottom: calc(100% + 0.1rem);
+    
+}
+.mirrored .weight{
+    transform: rotate(180deg) translateX(50%);
+    top: calc(100% + 0.1rem);
+    bottom: unset;
+}
+.weight:focus{
+    /* width: 2rem; */
+    outline: none;
+    background-color: rgb(238, 238, 238);
+    border-bottom: 2px solid rgb(207, 207, 207);
+    box-shadow: 0px 0px 1px 1px rgb(223, 223, 223);
+}
+
+.weight__hide {
+    font: inherit;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+}
+
+.weight__hide {
+    display: none;
+    white-space: pre;
+}
+.weight:focus-visible {
+    outline: none;
+}
+
+
+.track-spot {
+    width: 0.8rem;
+    height: 0.8rem;
+    min-width: fit-content;
+    align-items: center;
+    justify-content: center;
+    padding: 0.05rem 0.1rem;
+
+    font-weight: 800;
+    font-size: 0.5rem;
+
+    color: white;
+    background-color: var(--color-blue);
+    border-radius: 1rem;
+    
+    transition: 0.4s ease all;
+
+    position: absolute;
+    left: 50%;
+    transform-origin: 50% 50%;
+    transform: rotate(0deg) translateX(-50%);
+    top: calc(100% + 0.1rem);
+    bottom: unset;
+
+    display: none;
+    opacity: 0;
+}
+.track-spot.render{
+    display: flex;
+    opacity: 1;
+}
+.mirrored .track-spot{
+    transform: rotate(180deg) translateX(50%);
+    top: unset;
+    bottom: calc(100% + 0.1rem);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}

@@ -132,7 +132,7 @@ addNodeButton.addEventListener('click',
         let newNode=nodeTemplate.cloneNode(false);
         newNode.id=`node-${nodeID}`;
         newNode.innerHTML=`
-            <input class="identifier" type="text"
+            <span class="identifier__hide"></span><input class="identifier" type="text"
             id="node-name-${nodeID}" name="node-name-${nodeID}"
             value="${nodeID}">`;
         nodes[nodeID]=new TreeNode(

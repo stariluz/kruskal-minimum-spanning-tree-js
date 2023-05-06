@@ -7,6 +7,8 @@
     <title>Kruskal Algorithm</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="modal.css">
+    <link rel="stylesheet" href="./nodes/nodes.css">
+    <link rel="stylesheet" href="./edges/edges.css">
 </head>
 <body>
     <section class="modal-board" id="modal-board">
@@ -124,6 +126,7 @@
             </div>
         </article>
     </section>
+
     <div class="treeboard">
         <div class="weight-container" id="weight-container">
             El peso del arbol de expansión mínima es:
@@ -148,13 +151,13 @@
         </div>
         <div class="nodes-container" id="nodes-container">
             <div class="node-js node" id="node-A" draggable="false">
-                <input class="identifier" id="node-name-A" type="text" name="node-name-A" value="A">
+                <span class="identifier__hide"></span><input class="identifier" id="node-name-A" type="text" name="node-name-A" value="A">
             </div>
             <div class="node-js node" id="node-B" draggable="false">
-                <input class="identifier" id="node-name-B" type="text" name="node-name-B" value="B">
+                <span class="identifier__hide"></span><input class="identifier" id="node-name-B" type="text" name="node-name-B" value="B">
             </div>
             <div class="node-js node" id="node-C" draggable="false">
-                <input class="identifier" id="node-name-C" type="text" name="node-name-C" value="C">
+                <span class="identifier__hide"></span><input class="identifier" id="node-name-C" type="text" name="node-name-C" value="C">
             </div>
         </div>
         <form id="edges-form">
@@ -172,18 +175,21 @@
             <div class="edges-container" id="edges-container">
                 <div class="edge" id="edge-AB">
                     <span class="track-spot" id="edge-track-spot-AB"></span>
+                    <span class="weight__hide"></span>
                     <input class="weight" type="number" value="23" step="0.01"
                         id="edge-weight-AB"
                         name="edge-weight-AB">
                 </div>
                 <div class="edge" id="edge-CB">
                     <span class="track-spot" id="edge-track-spot-CB"></span>
+                    <span class="weight__hide"></span>
                     <input class="weight" type="number" value="4" step="0.01"
                         id="edge-weight-CB"
                         name="edge-weight-CB">
                 </div>
                 <div class="edge" id="edge-CA">
                     <span class="track-spot" id="edge-track-spot-CA"></span>
+                    <span class="weight__hide"></span>
                     <input class="weight" type="number" value="19" step="0.01"
                         id="edge-weight-CA"
                         name="edge-weight-CA">
@@ -194,5 +200,8 @@
     </div>
     <script src="modal.js"></script>
     <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="./nodes/nodes.js"></script>
+    <script src="./edges/edges.js"></script>
 </body>
 </html>
