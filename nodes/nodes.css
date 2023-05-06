@@ -11,8 +11,9 @@
     border-radius: 50%;
     border: 2px solid black;
     background-color: white;
-    font-weight: 600;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
 }
 .node#node-A{
     top: calc(50% - 1.5rem);
@@ -29,14 +30,13 @@
 .node .identifier{
     position: absolute;
     min-width: 1.5rem;
-    height: 1rem;
+    height: 0.85rem;
     box-sizing: content-box;
     padding: 0px 0.25rem;
     margin: 0;
     text-align: center;
     
     font: inherit;
-    font-weight: bold;
     background-color: rgb(235, 235, 235);
     border-radius: 0.2rem;
     border: 0;

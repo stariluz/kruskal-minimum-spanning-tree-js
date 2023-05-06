@@ -108,18 +108,18 @@ function getCenteredPixels(value)
  * @param {Element} nodeElement 
  */
  function setSelectedNode(nodeElement){
-    // console.log(nodeElement);
+    // console.log(nodeElement); // DEV
     if(nodeElement.classList.contains('identifier')){
         nodeElement=nodeElement.parentElement;
     }else if(!nodeElement.classList.contains('node-js')){
         
         return false;
     }
-    // console.log(nodes);
+    // console.log(nodes); // DEV
     for(let key in nodes){
         if(nodes[key].element==nodeElement){
             selectedNode=nodes[key];
-            console.log("SELECTED: ", selectedNode);
+            // console.log("SELECTED: ", selectedNode); // DEV
             return true;
         }
     }
@@ -140,6 +140,7 @@ addNodeButton.addEventListener('click',
             newNode
         )
         nodesContainer.appendChild(newNode);
+        retrackInputNodes();
         
         newNode.addEventListener('mousedown',onMouseDown,true);
         newNode.addEventListener('contextmenu',onRightClick,true);
@@ -152,7 +153,7 @@ window.addEventListener('resize', (event) => initNodes(), true);
  * @param {Event} event - The event
  */
 function onMouseDown(event) {
-    console.log("MOUSE DOWN!", state);
+    // console.log("MOUSE DOWN!", state); // DEV
 
     let pressedButton=event.button;
     if(pressedButton===2){
@@ -213,7 +214,7 @@ function onMouseDown(event) {
  * @param {MouseEvent} event - MouseUp Event
  */
 function onMouseUp(event) {
-    console.log("MOUSE UP!", state);
+    // console.log("MOUSE UP!", state); // DEV
 
     if(event.button==2){
         return;
@@ -336,14 +337,17 @@ function endCreateEdgeConection(){
     creatingEdge.element.id=edgeID;
     creatingEdge.element.innerHTML=`
         <span class="track-spot" id="edge-track-spot-${id}"></span>
+        <span class="weight__hide"></span>
         <input class="weight" type="number" value="0" step="0.01"
             id="edge-weight-${id}"
             name="edge-weight-${id}">
     `;
-    console.log(creatingEdge);
+    // console.log(creatingEdge); // DEV
     creatingEdge.setWeightInput(id);
     edges[id]=creatingEdge;
     recalculateEdge(creatingEdge);
+    retrackInputEdges();
+
     return true;
 }
 
@@ -471,7 +475,7 @@ function disableDeleteNode(){
 }
 async function deleteNode(){
     let deleteModal=await openModal('danger');
-    console.log("RESPONSE:",deleteModal);
+    // console.log("RESPONSE:",deleteModal); // DEV
     if(deleteModal){
         
         let id=selectedNode.id
